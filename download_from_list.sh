@@ -13,3 +13,5 @@ do
     python download.py "$apk"
     mv "$apk".apk downloaded_apks
 done < download_lists.txt
+
+python list.py TOOLS apps_topselling_free 10 > detail.csv
