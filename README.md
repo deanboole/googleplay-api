@@ -215,6 +215,16 @@ $ bash vt-reports/category_count.sh
 $ bash androguard-report.sh
 ```
 
+### Setup
+
+```bash
+$ git clone https://github.com/deanboole/googleplay-api.git
+$ virtualenv googleplay-api
+$ cd googleplay-api
+$ source bin/activate
+$ pip install -r requirements.txt
+```
+
 
 ## License
 
