@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-sys.path.append("/usr/share/androguard/")
+#sys.path.append("/usr/share/androguard/")
 
 from androguard.core.bytecodes import dvm, apk
 from androguard.core.analysis import analysis
