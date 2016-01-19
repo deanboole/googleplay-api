@@ -7,11 +7,17 @@ categories=(APP_WIDGETS TOOLS WEATHER LIFESTYLE PRODUCTIVITY TRANSPORTATION SOCI
 for category in ${categories[@]}; do
 
     # grap lists
-    mkdir -p download/applist_todownload/$t_stamp
+    if [ ! -d "download/applist_todownload/$t_stamp" ]; then
+        mkdir -p download/applist_todownload/$t_stamp
+    fi
+
     python list.py $category apps_topselling_free 1|cut -d';' -f 2 |grep -v "Package name" >> download/applist_todownload/$t_stamp/"$t_stamp"_"$category".txt
 
     # grep details
-    mkdir -p download/apk_detail_info/$t_stamp
+    if [ ! -d "download/applist_todownload/$t_stamp" ]; then
+        mkdir -p download/apk_detail_info/$t_stamp
+    fi
+
     python list.py $category apps_topselling_free 1 > download/apk_detail_info/$t_stamp/"$t_stamp"_"$category"_detail.csv
 
     # download apks from lists
