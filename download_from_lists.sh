@@ -25,7 +25,10 @@ for category in ${categories[@]}; do
     while read -r apk
     do
         python download.py "$apk"
-        mkdir -p download/downloaded_apks/$t_stamp
+        if [ ! -d "download/downloaded_apks/$t_stamp" ]; then
+            mkdir -p download/downloaded_apks/$t_stamp
+        fi
+
         mv "$apk".apk download/downloaded_apks/$t_stamp/"$t_stamp"_"$category"_"$n"_"$apk".apk
 
         n=$(($n+1))
