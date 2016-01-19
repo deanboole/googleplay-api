@@ -210,6 +210,9 @@ $ bash vt-reports/detect_positive.sh
 
 # Count number of positives in each category
 $ bash vt-reports/category_count.sh
+
+# Auto Static analysis via androguard
+$ bash androguard-report.sh
 ```
 
 
