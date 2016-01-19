@@ -11,7 +11,7 @@ from androguard.decompiler.dad import decompile
 pathtofile = "downloaded_apks/2016-01-06_TOOLS_10_tw.nitcs.tmpclear.apk"
 
 # information about files, permissions and different entry points(activities, services...)
-a = apk.APK( pathtofile )
+a = apk.APK(sys.argv[1])
 print "PACKAGE NAME:", "["+a.get_package()+"]"
 #a.show()
 #print a.get_activities()
