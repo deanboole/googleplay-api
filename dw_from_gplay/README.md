@@ -196,23 +196,11 @@ You can generate Protobuf stubs from `googleplay.proto` file with Google's `prot
       --java_out=OUT_DIR          Generate Java source file.
       --python_out=OUT_DIR        Generate Python source file.
 
-### Google Play top charts download and scan
+### Google Play top charts download
 
 ```bash
 # Generate apk download lists, details and the most important of all, download apks.
 $ bash download_from_lists.sh
-
-# Submit apks to virustotal. Reports are in the vt-reports folder.
-$ bash vt.sh
-
-# Grep positive apks from reports.
-$ bash vt-reports/detect_positive.sh
-
-# Count number of positives in each category
-$ bash vt-reports/category_count.sh
-
-# Auto Static analysis via androguard
-$ bash androguard-report.sh
 ```
 
 ### Setup
