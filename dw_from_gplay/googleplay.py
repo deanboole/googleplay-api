@@ -14,6 +14,8 @@ from google.protobuf.message import Message, DecodeError
 import googleplay_pb2
 import config
 
+requests.packages.urllib3.disable_warnings()
+
 class LoginError(Exception):
     def __init__(self, value):
         self.value = value
@@ -237,7 +239,7 @@ class GooglePlayAPI(object):
             path += "&o=%s" % requests.utils.quote(offset)
         message = self.executeRequestApi2(path)
         return message.payload.listResponse
-    
+
     def reviews(self, packageName, filterByDevice=False, sort=2, nb_results=None, offset=None):
         """Browse reviews.
         packageName is the app unique ID.
@@ -251,7 +253,7 @@ class GooglePlayAPI(object):
             path += "&dfil=1"
         message = self.executeRequestApi2(path)
         return message.payload.reviewResponse
-    
+
     def download(self, packageName, versionCode, offerType=1):
         """Download an app and return its raw data (APK file).
 
