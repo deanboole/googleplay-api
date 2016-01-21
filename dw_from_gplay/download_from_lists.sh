@@ -14,7 +14,7 @@ for category in ${categories[@]}; do
     python list.py $category apps_topselling_free 1|cut -d';' -f 2 |grep -v "Package name" >> ../download/applist_todownload/$t_stamp/"$t_stamp"_"$category".txt
 
     # grep details
-    if [ ! -d "../download/applist_todownload/$t_stamp" ]; then
+    if [ ! -d "../download/apk_detail_info/$t_stamp" ]; then
         mkdir -p ../download/apk_detail_info/$t_stamp
     fi
 
