@@ -1,0 +1,7 @@
+[PRODUCTION]
+database = DATABASE
+ip = SERVERIP
+
+[TEST]
+database = DATABASE
+ip = SERVERIP
