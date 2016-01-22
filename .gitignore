@@ -7,3 +7,9 @@
 
 # ignore downloaded apps
 *.apk
+
+# ignore download directory
+/download/
+
+# ignore config file
+*.conf
