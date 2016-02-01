@@ -7,13 +7,8 @@ from flask import Blueprint, render_template, request, make_response
 ui = Blueprint('ui', __name__)
 
 
-@ui.route('/about/', methods=['GET'])
-def about():
-
-    return render_template('layout.html')
-
-
-@ui.route('/apk/', methods=['GET'])
+@ui.route('/', methods=['GET'])
+@ui.route('/daily_apks/', methods=['GET'])
 def apk():
     from db.Mongo import DB
 
@@ -27,7 +22,6 @@ def apk():
 @ui.route('/apk/download/', methods=['POST'])
 def download_apk():
     from db.Mongo import DB
-    from bson.objectid import ObjectId
 
     my_db = DB()
     md5 = request.form['download_apk']
@@ -39,7 +33,4 @@ def download_apk():
     response.headers['Content-Type'] = 'application/vnd.android.package-archive'
     response.headers['Content-Disposition'] = 'attachment; filename='+apk_info['pgname']+".apk"
 
-    # headers = {"Content-Disposition": "attachment; filename=%s" % apk_info['pgname']+".apk"}
-
-    # return send_file(apkdata, attachment_filename=apk_info['pgname']+".apk")
     return response
