@@ -4,7 +4,7 @@
 import os
 import logging
 import gridfs
-from pymongo import MongoClient
+from pymongo import MongoClient, HASHED
 
 from ConfigParser import ConfigParser
 
@@ -36,6 +36,8 @@ class DB():
     def ensure_index(self):
         self.db.fs.files.ensure_index(
             'filename', unique=True, background=True)
+        self.db.apk.ensure_index(
+            [('av_result', HASHED)], background=True, sparse=True)
 
     def _clean_query(self, queries):
         """Clean unexcepted fields
@@ -57,7 +59,8 @@ class DB():
                            'ssdeep',
                            'sha256',
                            'sha512',
-                           'md5'
+                           'md5',
+                           'av_result'
                            )
 
         # filter unexpect fields
@@ -124,3 +127,12 @@ class DB():
             raise
         finally:
             return apkdata
+
+    def update_av_report(self, doc_id, av_result):
+        """Update Anti-Virus result
+        """
+        try:
+            self.db.apk.update_one({'_id': doc_id}, {'$set': {'av_result': av_result}})
+        except:
+            logging.error("Update Anti-Virus result error: {}".format(doc_id))
+            raise
