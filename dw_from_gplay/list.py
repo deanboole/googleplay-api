@@ -61,7 +61,7 @@ for i in message.doc[0].child:
 
     result = {}
 
-    result['vt_scan'] = 'false'
+    result['vt_scan'] = False
 
     # submit_date
     result['submit_date'] = today
@@ -106,7 +106,8 @@ for i in message.doc[0].child:
         DB().insert_apk(result)
     except KeyError:
         logging.warn("Maybe the apk already exists: {}".format(result['pgname']))
-        continue
+        # continue
+        raise
     except:
         logging.error("DB insert error: {}".format(result['pgname']))
         raise

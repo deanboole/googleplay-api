@@ -37,6 +37,8 @@ class DB():
         self.db.fs.files.ensure_index(
             'filename', unique=True, background=True)
         self.db.apk.ensure_index(
+            'vt_scan', background=True)
+        self.db.apk.ensure_index(
             [('av_result', HASHED)], background=True, sparse=True)
 
     def _clean_query(self, queries):
@@ -82,12 +84,12 @@ class DB():
         """
         payload = self._clean_query(origin_payload)
         # insert file to gridfs and check if file is already existed
-        if self.fs.exists(filename=payload['sha512']):
+        if self.fs.exists({'filename':payload['sha512']}):
             logging.debug(
                 "{0} File already exists!".format(
-                    payload['filename']))
-            file_id = self.db.fs.files.find_one(
-                {'filename': payload['sha512']})['_id']
+                    payload['pgname']))
+            file_id = self.fs.find_one(
+                {'filename': payload['sha512']})._id
         else:
             file_id = self.fs.put(
                 payload['apkdata'],
@@ -133,7 +135,9 @@ class DB():
         """Update Anti-Virus result
         """
         try:
-            self.db.apk.update_one({'_id': doc_id}, {'$set': {'av_result': av_result}})
+            self.db.apk.update_one(
+                {'_id': doc_id},
+                {'$set': {'vt_scan': True, 'av_result': av_result}})
         except:
             logging.error("Update Anti-Virus result error: {}".format(doc_id))
             raise
