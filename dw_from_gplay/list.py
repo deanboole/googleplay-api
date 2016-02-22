@@ -61,6 +61,8 @@ for i in message.doc[0].child:
 
     result = {}
 
+    result['vt_scan'] = 'false'
+
     # submit_date
     result['submit_date'] = today
 
