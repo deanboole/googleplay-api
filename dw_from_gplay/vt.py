@@ -8,8 +8,9 @@ import virustotal
 from db.Mongo import DB
 
 logging.basicConfig(format='%(asctime)s %(message)s',
-                                        dtefmt='%Y-%m-%d %I:%M:%S',
-                                        level=logging.DEBUG)
+                    dtefmt='%Y-%m-%d %I:%M:%S',
+                    level=logging.DEBUG)
+
 
 class vt:
 
@@ -26,7 +27,7 @@ class vt:
         try:
             result = self.v.get(md5)
 
-        except:
+        except virustotal.VirusTotal.ApiError:
             logging.error("Maybe exceed the number of queries.")
             raise
 
@@ -51,11 +52,17 @@ class vt:
 
         try:
             result = self.v.scan(filename)
+            # self.v.scan(filename)
 
-        except:
+        except virustotal.VirusTotal.EntityTooLarge:
+            logging.error("Exceed the limit of file size.")
+            return None
+
+        except virustotal.VirusTotal.ApiError:
             logging.error("Maybe exceed the number of queries.")
             raise
 
+        result.join()
         av_result['summary'] = {}
         av_result['summary']['total'] = result.total
         av_result['summary']['positives'] = result.positives
@@ -67,6 +74,7 @@ class vt:
 
         return av_result
 
+
 def main():
 
     try:
@@ -76,7 +84,6 @@ def main():
         raise
 
     while(True):
-        # doc = db.get_apk({'av_result': {'$exists': False}, 'limit': 1})
         doc = db.get_apk({'vt_scan': False, 'limit': 1})
 
         if not doc:
@@ -86,22 +93,23 @@ def main():
         av_result = vt().get(doc['md5'])
 
         if av_result is None:
+            time.sleep(20)
             filename = '/tmp/'+doc['pgname']+'.apk'
             with open(filename, 'wb') as f:
                 f.write(db.get_apk_file(doc['apkdata']))
 
-            try:
-                av_result = vt().submit_sample(filename)
-            finally:
-                os.remove(filename)
+            av_result = vt().submit_sample(filename)
+            os.remove(filename)
 
-        # Just in case
-        if av_result:
-            db.update_av_report(doc['_id'], av_result)
-        else:
-            logging.error("I've tried but in vain.")
+            logging.info("Get av_result again")
+            # It will try to get report with several queries,
+            # so we take some sleep here.
+            time.sleep(60)
 
-        time.sleep(15)
+        logging.debug("av_result: {}".format(av_result))
+        db.update_av_report(doc['_id'], av_result)
+
+        time.sleep(20)
 
 if __name__ == "__main__":
     main()

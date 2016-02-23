@@ -84,7 +84,7 @@ class DB():
         """
         payload = self._clean_query(origin_payload)
         # insert file to gridfs and check if file is already existed
-        if self.fs.exists({'filename':payload['sha512']}):
+        if self.fs.exists({'filename': payload['sha512']}):
             logging.debug(
                 "{0} File already exists!".format(
                     payload['pgname']))
@@ -134,10 +134,23 @@ class DB():
     def update_av_report(self, doc_id, av_result):
         """Update Anti-Virus result
         """
-        try:
-            self.db.apk.update_one(
-                {'_id': doc_id},
-                {'$set': {'vt_scan': True, 'av_result': av_result}})
-        except:
-            logging.error("Update Anti-Virus result error: {}".format(doc_id))
-            raise
+        if av_result:
+            try:
+                self.db.apk.update_one(
+                    {'_id': doc_id},
+                    {'$set': {'vt_scan': True, 'av_result': av_result}})
+            except:
+                logging.error(
+                    "Update Anti-Virus result error: {}".format(doc_id))
+                raise
+
+        else:
+            try:
+                logging.debug("Update document without av_result.")
+                self.db.apk.update_one(
+                    {'_id': doc_id},
+                    {'$set': {'vt_scan': True}})
+            except:
+                logging.error(
+                    "Update Anti-Virus result error: {}".format(doc_id))
+                raise
