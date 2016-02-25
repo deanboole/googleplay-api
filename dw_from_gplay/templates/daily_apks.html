@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block title %}Daily_apks{% endblock %}
+{% block content %}
+
+  <h4>Date of Top downloaded APK : {{ date }}</h4>
+  
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="#by_categories" role="tab" data-toggle="tab">By Categories</a></li>
+    <li><a href="#by_antivirus" role="tab" data-toggle="tab">By Anti-Virus</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <!-- Sort by catogories -->
+    <div role="tabpanel" class="tab-pane active" id="by_categories">
+      {% for cat in categories %}
+        <div class="col-md-6">
+        <h5>{{ cat }}</h5> 
+          <table class="table">
+            <thead>
+                <tr>
+                    <th>Anti-Virus</th>
+                    <th>APK name</th>
+                    <th>rank</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for rank in categories[cat] %}
+              {% if categories[cat][rank]['av_result'] %}
+                {% if categories[cat][rank]['av_result']['summary']['positives'] == 0 %}
+                  <tr class="success">
+                {% else %}
+                  <tr class="danger">
+                {% endif %}
+                <td>
+                  {{ categories[cat][rank]['av_result']['summary']['positives'] }}/{{ categories[cat][rank]['av_result']['summary']['total'] }}
+                </td>
+                <td>{{ categories[cat][rank]['name'] }}</td>
+                <td>{{ categories[cat][rank]['rank'] }}</td>
+              </tr>
+              {% else %}
+              <tr>
+                <td></td>
+                <td>{{ categories[cat][rank]['name'] }}</td>
+                <td>{{ categories[cat][rank]['rank'] }}</td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endfor %}
+    </div>
+    <!-- Sort by Anti-Virus -->
+    <div role="tabpanel" class="tab-pane" id="by_antivirus">
+      {% for time in antivirus|sort(reverse=True) %}
+        <div>
+        <h5>{{ time }}</h5> 
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Anti-Virus</th>
+                <th>APK name</th>
+                <th>Version</th>
+                <th>MD5</th>
+                <th>category</th>
+                <th>rank</th>
+              </tr>
+            </thead>
+          <tbody>
+            {% for name in antivirus[time] %}
+              <tr class="danger">
+                <td>
+                  {{ antivirus[time][name]['av_result']['summary']['positives'] }}/{{ antivirus[time][name]['av_result']['summary']['total'] }}
+                </td>
+                <td>{{ antivirus[time][name]['name'] }}</td>
+                <td>{{ antivirus[time][name]['version'] }}</td>
+                <td>{{ antivirus[time][name]['md5'] }}</td>
+                <td>{{ antivirus[time][name]['title'] }}</td>
+                <td>{{ antivirus[time][name]['rank'] }}</td>
+                <td>
+                  <form class="form-inline" method="post" action="download/">
+                  <button class = "btn btn-primary" type = "submit" name="download_apk" value={{ antivirus[time][name]['_id'] }} >
+                    Download
+                  </button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+{% endblock %}
