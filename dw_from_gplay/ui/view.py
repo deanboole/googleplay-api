@@ -66,11 +66,11 @@ def daily_apks_by_antivirus(db_result):
         if 'av_result' in i:
             if i['av_result']['summary']['positives'] > 0:
                 if i['av_result']['summary']['positives'] in result:
-                    result[i['av_result']['summary']['positives']]['name'] = i
+                    result[i['av_result']['summary']['positives']][i['name']] = i
 
                 else:
                     result[i['av_result']['summary']['positives']] = {}
-                    result[i['av_result']['summary']['positives']]['name'] = i
+                    result[i['av_result']['summary']['positives']][i['name']] = i
 
     # return render_template('daily_antivirus.html',
     #                        date=today,

@@ -29,8 +29,14 @@
               {% if categories[cat][rank]['av_result'] %}
                 {% if categories[cat][rank]['av_result']['summary']['positives'] == 0 %}
                   <tr class="success">
+                    <td>
+                      {{ categories[cat][rank]['av_result']['summary']['positives'] }}/{{ categories[cat][rank]['av_result']['summary']['total'] }}
+                    </td>
                 {% else %}
                   <tr class="danger">
+                    <td><a data-toggle="modal" data-target="#{{ categories[cat][rank]['_id'] }}">
+                      {{ categories[cat][rank]['av_result']['summary']['positives'] }}/{{ categories[cat][rank]['av_result']['summary']['total'] }}
+                    </a></td>
                 {% endif %}
                 <td>
                   {{ categories[cat][rank]['av_result']['summary']['positives'] }}/{{ categories[cat][rank]['av_result']['summary']['total'] }}
@@ -70,21 +76,14 @@
           <tbody>
             {% for name in antivirus[time] %}
               <tr class="danger">
-                <td>
+                <td><a data-toggle="modal" data-target="#{{ antivirus[time][name]['_id'] }}">
                   {{ antivirus[time][name]['av_result']['summary']['positives'] }}/{{ antivirus[time][name]['av_result']['summary']['total'] }}
-                </td>
+                </a></td>
                 <td>{{ antivirus[time][name]['name'] }}</td>
                 <td>{{ antivirus[time][name]['version'] }}</td>
                 <td>{{ antivirus[time][name]['md5'] }}</td>
                 <td>{{ antivirus[time][name]['title'] }}</td>
                 <td>{{ antivirus[time][name]['rank'] }}</td>
-                <td>
-                  <form class="form-inline" method="post" action="download/">
-                  <button class = "btn btn-primary" type = "submit" name="download_apk" value={{ antivirus[time][name]['_id'] }} >
-                    Download
-                  </button>
-                  </form>
-                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -93,5 +92,62 @@
       {% endfor %}
     </div>
   </div>
+  
+  <!--modal for Anti-Virus result -->
+  {% for time in antivirus %}
+    {% for name in antivirus[time] %}
+      <div class="modal fade" id="{{ antivirus[time][name]['_id'] }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Anti-Virus result for {{ antivirus[time][name]['name'] }}</h4>
+            </div>
+            <div class="modal-body">
+              <div class="list-group">
+                <li class="list-group-item">APK code name: {{ antivirus[time][name]['pgname'] }}</li>
+                <li class="list-group-item">APK version: {{ antivirus[time][name]['version'] }}</li>
+                <li class="list-group-item">APK md5: {{ antivirus[time][name]['md5'] }}</li>
+                <li class="list-group-item">
+                  <form class="form-inline" method="post" action="download/">
+                  <button class = "btn btn-primary" type = "submit" name="download_apk" value={{ antivirus[time][name]['_id'] }} >
+                    Download
+                  </button>
+                  </form>
+                </li>
+              </div>
+              <div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>AV-Engine</th>
+                      <th>Version</th>
+                      <th>Result</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                  {% for avresult in antivirus[time][name]['av_result'] %}
+                    {% if avresult != 'summary' %}
+                      <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ avresult }}</td>
+                        <td>{{ antivirus[time][name]['av_result'][avresult]['version'] }}</td>
+                        <td>{{ antivirus[time][name]['av_result'][avresult]['result'] }}</td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endfor %}
 
 {% endblock %}
