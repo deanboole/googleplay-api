@@ -44,7 +44,8 @@ class DB():
     def _clean_query(self, queries):
         """Clean unexcepted fields
         """
-        expected_fields = ('source',
+        expected_fields = ('_id',
+                           'source',
                            'submit_date',  # date of APK submit to DB
                            'name',
                            'version',
