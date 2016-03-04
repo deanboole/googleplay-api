@@ -1,0 +1,18 @@
+# separator used by search.py, categories.py, ...
+SEPARATOR = ";"
+
+LANG            = "" # can be en_US, fr_FR, ...
+ANDROID_ID      = "" # "xxxxxxxxxxxxxxxx"
+GOOGLE_LOGIN    = "" # "username@gmail.com"
+GOOGLE_PASSWORD = ""
+AUTH_TOKEN      = None # "yyyyyyyyy"
+
+# force the user to edit this file
+if any([each == None for each in [ANDROID_ID, GOOGLE_LOGIN, GOOGLE_PASSWORD]]):
+    raise Exception("config.py not updated")
+
+locale_timestring = {
+    'en_US':'%b %d, %Y',
+    'zh_TW':'%Y\345\271\264%m\346\234\210%d\346\227\245',
+    'ja_JP':'%Y\345\271\264%m\346\234\210%d\346\227\245'
+}
