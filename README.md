@@ -5,7 +5,7 @@
 * Clone from repo
     
     ```bash
-    $ https://github.com/sidra-asa/gplay-apk-analysis.git
+    $ git clone https://github.com/sidra-asa/gplay-apk-analysis.git
     ```
 
 * Create and activate virtual environment
