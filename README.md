@@ -5,14 +5,14 @@
 * Clone from repo
     
     ```bash
-    $ git clone https://github.com/deanboole/googleplay-api.git
+    $ https://github.com/sidra-asa/gplay-apk-analysis.git
     ```
 
 * Create and activate virtual environment
     
     ```bash
-    $ virtualenv googleplay-api
-    $ cd googleplay-api
+    $ virtualenv gplay-apk-analysis
+    $ cd gplay-apk-analysis
     $ source bin/activate
     ```
 
