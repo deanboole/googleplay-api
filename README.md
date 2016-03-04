@@ -1,32 +1,61 @@
-# Google Play APKs Analysis
+## Google Play APKs Analysis
 
 ### Setup
 
+#### Clone from repo
 ```bash
 $ git clone https://github.com/deanboole/googleplay-api.git
+```
+
+#### Create and activate virtual environment
+```bash
 $ virtualenv googleplay-api
 $ cd googleplay-api
 $ source bin/activate
+```
+
+#### Install require modules
+```bash
 $ pip install -r requirements.txt
 ```
 
-### Module function
+#### Mongo DB Installation
 ```bash
-# Generate apk download lists, details and the most important of all, download apks.
-$ bash dw_from_gplay/download_from_lists.sh
-
-# Submit apks to virustotal. Reports are in the vt-reports folder.
-$ bash virustotal/vt.sh
-
-# Grep positive apks from reports.
-$ bash virustotal/vt-reports/detect_positive.sh
-
-# Count number of positives in each category
-$ bash virustotal/vt-reports/category_count.sh
-
-# Auto Static analysis via androguard
-$ bash andro-analysis/androguard-report.sh
-
-# Open Jadx GUI and start to analyze
-$ ./bin/jadx-gui
+https://docs.mongodb.org/getting-started/shell/tutorial/install-mongodb-on-ubuntu/
 ```
+
+#### Create your dbpath
+```bash
+$ mkdir -p ~/data/db
+```
+
+#### Start mongod with
+```bash
+$ mongod --dbpath ~/data/db
+```
+
+#### Fill in infos
+```bash
+dw_from_gplay/config.py
+dw_from_gplay/db/db.conf (see db.conf.example)
+dw_from_gplay/web.py
+```
+
+### How to use
+
+#### Download apks from googleplay
+```bash
+$ bash dw_from_gplay/download_from_lists.sh
+```
+
+#### Submit apks to virustotal
+```bash
+$ python dw_from_gplay/vt.py
+```
+
+#### Launch web interface to review results!
+```bash
+$ python dw_from_gplay/web.py
+```
+
+
