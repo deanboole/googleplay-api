@@ -91,7 +91,7 @@ for i in message.doc[0].child:
     # print sizeof_fmt(i.details.appDetails.installationSize)
     # Upload date
     result['upload_date'] = datetime.strptime(unicode(i.details.appDetails.uploadDate).encode('utf8'),
-                                              "%Y\345\271\264%m\346\234\210%d\346\227\245").strftime('%Y-%m-%d')
+                                              locale_timestring[LANG]).strftime('%Y-%m-%d')
     # print datetime.strptime(unicode(i.details.appDetails.uploadDate).encode('utf8'),
     #                         "%Y\345\271\264%m\346\234\210%d\346\227\245").strftime('%Y-%m-%d')
 
