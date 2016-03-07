@@ -2,9 +2,25 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from flask import Blueprint, render_template, request, make_response
+from common.utils import Pagination
+from flask import Blueprint, render_template, request, make_response, g
 
 ui = Blueprint('ui', __name__)
+
+
+@ui.before_request
+def check_page():
+    """
+    Cleans up any query parameter that is used
+    to build pagination.
+    """
+    try:
+        page = int(request.args.get('page', 1))
+    except ValueError:
+        page = 1
+
+    logging.debug("Current Page: {}".format(page))
+    g.page = page
 
 
 @ui.route('/all_apks/', methods=['GET'])
@@ -12,10 +28,19 @@ def all_apks():
     from db.Mongo import DB
 
     # result = DB().get_apk({'title': 'APP_WIDGETS'})
-    result = DB().get_apk({})
+    result = []
+
+    g.total = list(DB().get_apk({}))
+    for i in g.total[(10 * (g.page - 1)):(10 * (g.page - 1)) + 10]:
+        result.append(i)
+
+    for i in g.total[0:20]:
+        logging.info(i['name'])
 
     return render_template('all_apks.html',
-                           apks=result)
+                           apks=Pagination(g.page, len(g.total), result),
+                           view='ui.all_apks',
+                           **request.args.to_dict())
 
 
 @ui.route('/', methods=['GET'])
@@ -100,9 +125,3 @@ def download_apk():
     response.headers['Content-Disposition'] = 'attachment; filename='+apk_info['pgname']+".apk"
 
     return response
-
-
-@ui.route('/mytest/', methods=['GET'])
-def mytest():
-
-    return render_template('mine.html',)
