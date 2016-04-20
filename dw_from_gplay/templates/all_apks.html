@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block title %}All_apks{% endblock %}
+{% block content %}
+
+  <div class="row">
+    <div class="small-4 large-centered columns">
+      <h4>Top downloaded APK all the time</h4>
+    </div>
+  </div>
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Anti-Virus</th>
+          <th>APK name</th>
+          <th>version</th>
+          <th>MD5</th>
+          <th>category</th>
+          <th>rank</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for apk in apks.items|sort(attribute='submit_date', reverse=True) %}
+          {% if apk['av_result'] %}
+            {% if apk['av_result']['summary']['positives'] == 0 %}
+              <tr class="success">
+            {% else %}
+              <tr class="danger">
+            {% endif %}
+              <td>{{ loop.index }}</td>
+              <td>
+                {{ apk['av_result']['summary']['positives'] }}/{{ apk['av_result']['summary']['total'] }}
+              </td>
+              <td>{{ apk['name'] }}</td>
+              <td>{{ apk['version'] }}</td>
+              <td>{{ apk['md5'] }}</td>
+              <td>{{ apk['title'] }}</td>
+              <td>{{ apk['rank'] }}</td>
+              <td>
+                <form class="form-inline" method="post" action="download/">
+                <button class = "btn btn-primary" type = "submit" name="download_apk" value={{ apk['_id'] }} >
+                  Download
+                </button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td></td>
+              <td>{{ apk['name'] }}</td>
+              <td>{{ apk['version'] }}</td>
+              <td>{{ apk['md5'] }}</td>
+              <td>{{ apk['title'] }}</td>
+              <td>{{ apk['rank'] }}</td>
+              <td>
+                <form class="form-inline" method="post" action="download/">
+                <button class = "btn btn-primary" type = "submit" name="download_apk" value={{ apk['_id'] }} >
+                  Download
+                </button>
+                </form>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    {% from "pagination.html" import render_pagination %}
+    {{ render_pagination(apks, view, request.args.to_dict()) }}
+  </div>
+
+{% endblock %}

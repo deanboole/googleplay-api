@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+{% block title %}Daily_apks{% endblock %}
+{% block content %}
+
+  <h4>Date of Top downloaded APK : {{ date }}</h4>
+  
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="#by_categories" role="tab" data-toggle="tab">By Categories</a></li>
+    <li><a href="#by_antivirus" role="tab" data-toggle="tab">By Anti-Virus</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <!-- Sort by catogories -->
+    <div role="tabpanel" class="tab-pane active" id="by_categories">
+      {% for cat in categories %}
+        <div class="col-md-6">
+        <h5>{{ cat }}</h5> 
+          <table class="table">
+            <thead>
+                <tr>
+                    <th>Anti-Virus</th>
+                    <th>APK name</th>
+                    <th>rank</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for rank in categories[cat] %}
+              {% if categories[cat][rank]['av_result'] %}
+                {% if categories[cat][rank]['av_result']['summary']['positives'] == 0 %}
+                  <tr class="success">
+                    <td>
+                      {{ categories[cat][rank]['av_result']['summary']['positives'] }}/{{ categories[cat][rank]['av_result']['summary']['total'] }}
+                    </td>
+                {% else %}
+                  <tr class="danger">
+                    <td><a data-toggle="modal" data-target="#{{ categories[cat][rank]['_id'] }}">
+                      {{ categories[cat][rank]['av_result']['summary']['positives'] }}/{{ categories[cat][rank]['av_result']['summary']['total'] }}
+                    </a></td>
+                {% endif %}
+                </td>
+                <td>{{ categories[cat][rank]['name'] }}</td>
+                <td>{{ categories[cat][rank]['rank'] }}</td>
+              </tr>
+              {% else %}
+              <tr>
+                <td></td>
+                <td>{{ categories[cat][rank]['name'] }}</td>
+                <td>{{ categories[cat][rank]['rank'] }}</td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endfor %}
+    </div>
+    <!-- Sort by Anti-Virus -->
+    <div role="tabpanel" class="tab-pane" id="by_antivirus">
+      {% for time in antivirus|sort(reverse=True) %}
+        <div>
+        <h5>{{ time }}</h5> 
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Anti-Virus</th>
+                <th>APK name</th>
+                <th>Version</th>
+                <th>MD5</th>
+                <th>category</th>
+                <th>rank</th>
+              </tr>
+            </thead>
+          <tbody>
+            {% for name in antivirus[time] %}
+              <tr class="danger">
+                <td><a data-toggle="modal" data-target="#{{ antivirus[time][name]['_id'] }}">
+                  {{ antivirus[time][name]['av_result']['summary']['positives'] }}/{{ antivirus[time][name]['av_result']['summary']['total'] }}
+                </a></td>
+                <td>{{ antivirus[time][name]['name'] }}</td>
+                <td>{{ antivirus[time][name]['version'] }}</td>
+                <td>{{ antivirus[time][name]['md5'] }}</td>
+                <td>{{ antivirus[time][name]['title'] }}</td>
+                <td>{{ antivirus[time][name]['rank'] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <!--modal for Anti-Virus result -->
+  {% for time in antivirus %}
+    {% for name in antivirus[time] %}
+      <div class="modal fade" id="{{ antivirus[time][name]['_id'] }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Anti-Virus result for {{ antivirus[time][name]['name'] }}</h4>
+            </div>
+            <div class="modal-body">
+              <div class="list-group">
+                <li class="list-group-item">APK code name: {{ antivirus[time][name]['pgname'] }}</li>
+                <li class="list-group-item">APK version: {{ antivirus[time][name]['version'] }}</li>
+                <li class="list-group-item">APK md5: {{ antivirus[time][name]['md5'] }}</li>
+                <li class="list-group-item">
+                  <form class="form-inline" method="post" action="download/">
+                  <button class = "btn btn-primary" type = "submit" name="download_apk" value={{ antivirus[time][name]['_id'] }} >
+                    Download
+                  </button>
+                  </form>
+                </li>
+              </div>
+              <div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>AV-Engine</th>
+                      <th>Version</th>
+                      <th>Result</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                  {% for avresult in antivirus[time][name]['av_result'] %}
+                    {% if avresult != 'summary' %}
+                      <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ avresult }}</td>
+                        <td>{{ antivirus[time][name]['av_result'][avresult]['version'] }}</td>
+                        <td>{{ antivirus[time][name]['av_result'][avresult]['result'] }}</td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Flaskr</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body>
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navibar-header">
+            <a class="navbar-brand" href="#">
+            </a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li><a href="/all_apks">All_apks</a></li>
+            </ul>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li><a href="/daily_apks">Daily_apks</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
